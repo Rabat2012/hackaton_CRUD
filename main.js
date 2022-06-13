@@ -1,17 +1,4 @@
-// Запросы, XMLHttpRequest, AJAX.  Домашняя работа
-
-// Создать контактную книжку на основе Todo List.
-// Функционал должен включать в себя:
-
-// 1. Создание контакта (Имя, Фамилия, номер телефона)
-// 2. Удаление контакта
-// 3. Список контактов на главном экране
-// 4. Использовать json-server.
-// 5. Редактирование контакта
-// 6. Пагинация(дополнительно)
-// 7. Поиск(дополнительно)
-
-let API = "http://localhost:8001/todo";
+let API = "http://localhost:8000/todo";
 
 let btn = document.querySelector(".btn");
 let todoList = document.querySelector(".todo-list");
@@ -20,12 +7,14 @@ let save = document.querySelector(".save");
 let inpName = document.querySelector(".inp-name");
 let inpFirst = document.querySelector(".inp-first");
 let inpPhone = document.querySelector(".inp-phone");
+let weekKpi = document.querySelector(".week-kpi");
+let monthKpi = document.querySelector(".month-kpi");
 let mainOl = document.querySelector(".main-ol");
 let mainScreen = document.querySelector(".main-screen");
 let btnX = document.querySelector(".btn-x");
 let disabl = document.querySelector(".disabl");
 let pagination = document.querySelector(".pagination");
-// let inpSearch = document.querySelector(".inp-search");
+let inpSearch = document.querySelector(".inp-search");
 btnX.addEventListener("click", function () {
   todoList.style.display = "none";
   mainScreen.style.display = "block";
@@ -36,15 +25,18 @@ send.addEventListener("click", async function () {
     name: inpName.value,
     inpFirst: inpFirst.value,
     inpPhone: inpPhone.value,
+    weekKpi: weekKpi.value,
+    monthKpi: monthKpi.value,
   };
 
   if (
     obj.name.trim() === "" ||
     obj.inpFirst.trim() === "" ||
-    obj.inpPhone.trim() === ""
+    obj.inpPhone.trim() === "" ||
+    obj.weekKpi.trim() === "" ||
+    obj.monthKpi.trim() === ""
   ) {
-    alert("zapolnite pole");
-    return;
+    alert("Заполните поля!");
   }
 
   await fetch(API, {
@@ -60,6 +52,8 @@ send.addEventListener("click", async function () {
   inpName.value = "";
   inpFirst.value = "";
   inpPhone.value = "";
+  weekKpi.value = "";
+  monthKpi.value = "";
   location.reload();
   getTodoList();
 });
@@ -69,8 +63,8 @@ btn.addEventListener("click", function () {
   mainScreen.style.display = "none";
 });
 
-// inpSearch.addEventListener("input", function () {
-//   console.log("input");
+// inpSearch.addEventListener("input", function (e) {
+//   // console.log("input");
 //   getTodoList();
 // });
 
@@ -81,7 +75,7 @@ async function getTodoList() {
     .then(res => res.json())
     .catch(err => console.log(error));
   // console.log(allTodos);
-  // let lastPage = Math.ceil(allTodos.length / 2);
+  let lastPage = Math.ceil(allTodos.length / 2);
   allTodos.forEach(element => {
     let div = document.createElement("div");
     div.id = element.id;
@@ -91,11 +85,13 @@ async function getTodoList() {
     div.style.marginBottom = "10px";
     div.style.textTransform = "Uppercase";
     div.innerHTML = `
-    <li><strong>Name:  </strong>   ${element.name}</li>
-    <li><strong>First Name:  </strong>   ${element.inpFirst}</li>
-    <li><strong>Phone number:  </strong>   ${element.inpPhone}</li>
-    <button style="margin-top: 10px" class="btn-delete">delete</button>
-    <button class="btn-edit">edit</button>
+    <li><strong>Имя:  </strong>   ${element.name}</li>
+    <li><strong>Фамилия:  </strong>   ${element.inpFirst}</li>
+    <li><strong>Номер телефона:  </strong>   ${element.inpPhone}</li>
+    <li><strong>Недельный KPI: </strong> ${element.weekKpi}</li>
+    <li><strong>Ежемесячный KPI: </strong> ${element.monthKpi}</li>
+    <button style="margin-top: 10px" class="btn-delete">Удалить</button>
+    <button class="btn-edit">Изменить</button>
     `;
     mainOl.append(div);
   });
@@ -112,17 +108,19 @@ save.addEventListener("click", async function () {
     name: inpName.value,
     inpFirst: inpFirst.value,
     inpPhone: inpPhone.value,
+    weekKpi: weekKpi.value,
+    monthKpi: monthKpi.value,
   };
   let id = disabl.value;
-  // запрос для измениние данных
+
   await fetch(`${API}/${id}`, {
-    method: "PATCH", // указываем метод
-    body: JSON.stringify(editedTodo), // указываем что именно нужно запостить
+    method: "PATCH",
+    body: JSON.stringify(editedTodo),
     headers: {
       "Content-type": "application/json; charset=utf-8",
-    }, // кодировка
+    },
   });
-  // после изменения закрываем для edit
+
   todoList.style.display = "none";
   mainScreen.style.display = "block";
   // getTodos();
@@ -131,7 +129,6 @@ save.addEventListener("click", async function () {
 
 document.addEventListener("click", async function (e) {
   if (e.target.className === "btn-delete") {
-    // запрос для удаление
     let id = e.target.parentNode.id;
     await fetch(`${API}/${id}`, {
       method: "DELETE",
@@ -147,32 +144,38 @@ document.addEventListener("click", async function (e) {
     send.style.display = "none";
     save.style.display = "block";
     save.style.width = "258px";
-    save.style.height = "35px";
+    save.style.height = "45px";
     save.style.marginTop = "25px";
     save.style.marginBottom = "25px";
     save.style.borderRadius = "3px";
+    send.style.width = "258px";
+    send.style.height = "45px";
+    send.style.marginTop = "25px";
+    send.style.marginBottom = "25px";
+    send.style.borderRadius = "3px";
     let id = e.target.parentNode.id;
     console.log(id);
-    // запрос для получение данных чтоб мы могли отобразить все в модалке для редактирование
 
     let response = await fetch(`${API}/${id}`)
       .then(res => res.json())
-      .catch(err => console.log(error));
-    console.log(response);
-    //! полученные данные отображаем в инпутах из html
+      .catch(error => console.log(error));
+    // console.log(response);
+    // if (e.target.id === "btn-next") {
+    //   page++;
+    //   getTodoList();
+    //   location.reload();
+    // }
+    // if (e.target.id === "btn-prev") {
+    //   page--;
+    //   getTodoList();
+    //   location.reload();
+    // }
+
     inpName.value = response.name;
     inpFirst.value = response.inpFirst;
     inpPhone.value = response.inpPhone;
+    weekKpi.value = response.weekKpi;
+    monthKpi.value = response.monthKpi;
     disabl.value = response.id;
   }
-  // if (e.target.id === "btn-next") {
-  //   page++;
-  //   getTodoList();
-  //   location.reload();
-  // }
-  // if (e.target.id === "btn-prev") {
-  //   page--;
-  //   getTodoList();
-  //   location.reload();
-  // }
 });

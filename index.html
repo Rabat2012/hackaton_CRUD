@@ -9,38 +9,40 @@
   </head>
   <body>
     <div class="todo-list" style="display: none">
-      <button class="btn-x" style="margin-left: 324px">X</button>
-      <h1>Todo-List</h1>
-      <p>Name</p>
-      <input class="inp-name" type="text" placeholder="name" />
-      <p>FirstName</p>
-      <input class="inp-first" type="text" placeholder="first name" />
-      <p>Phone number</p>
+      <button class="btn-x" style="margin-left: 324px">
+        <p>X</p>
+      </button>
+      <h1>Создание студента</h1>
+      <p>Имя</p>
+      <input class="inp-name" type="text" placeholder="Имя" />
+      <p>Фамилия</p>
+      <input class="inp-first" type="text" placeholder="Фамилия" />
+      <p>Номер телефона</p>
       <input
         class="inp-phone"
         type="number"
-        placeholder="phone number
+        placeholder="Номер телефона
       "
       />
-      <p></p>
-      <input class="disabl" type="text" disabled />
-      <button class="send">Send</button>
-      <button class="save" style="display: none">Save</button>
+      <p>Недельный KPI</p>
+      <input type="number" name="" class="week-kpi" />
+      <p>Ежемесячный KPI</p>
+      <input type="number" name="" class="month-kpi" />
+      <p class="disabl" type="text" disabled></p>
+      <button class="send">Соханить</button>
+      <button class="save" style="display: none">Сохранить</button>
     </div>
 
-    <!-- kasjdh -->
-
     <div style="display: block" class="main-screen">
-      <h1>Contact Details</h1>
-      <button class="btn">Add Data</button>
-      <p></p>
+      <h1>Список студентов</h1>
+      <button class="btn">Добавить</button>
+      <!-- <p>Поиск</p> -->
       <!-- <input type="text" class="inp-search" /> -->
-      <p></p>
+      <br />
+      <br />
       <div class="main-ol"></div>
     </div>
     <div class="pagination"></div>
-
-    <!-- modal -->
 
     <script src="main.js"></script>
   </body>
